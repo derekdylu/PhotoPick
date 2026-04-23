@@ -27,19 +27,16 @@ class MainWindow(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle("Raw Organizer")
+        self.setUnifiedTitleAndToolBarOnMac(True)
 
         central = QWidget(self)
+        central.setObjectName("central")
         self.setCentralWidget(central)
         layout = QHBoxLayout(central)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
         layout.addWidget(self._build_sidebar(), 0)
-
-        divider = QFrame()
-        divider.setFrameShape(QFrame.VLine)
-        divider.setFrameShadow(QFrame.Plain)
-        layout.addWidget(divider, 0)
 
         self.stack = QStackedWidget()
         self.orphans_view = OrphansView()
@@ -52,29 +49,28 @@ class MainWindow(QMainWindow):
 
     def _build_sidebar(self) -> QWidget:
         sidebar = QWidget()
-        sidebar.setFixedWidth(200)
+        sidebar.setObjectName("sidebar")
+        sidebar.setFixedWidth(220)
+        sidebar.setAttribute(Qt.WA_StyledBackground, True)
+
         v = QVBoxLayout(sidebar)
-        v.setContentsMargins(12, 16, 12, 12)
-        v.setSpacing(8)
+        v.setContentsMargins(14, 18, 14, 14)
+        v.setSpacing(10)
 
         title = QLabel("Raw Organizer")
-        title.setStyleSheet("font-weight: 600; font-size: 14px;")
+        title.setObjectName("sidebarTitle")
         v.addWidget(title)
 
         self.feature_list = QListWidget()
+        self.feature_list.setObjectName("featureList")
         self.feature_list.setFrameShape(QFrame.NoFrame)
         self.feature_list.addItem(QListWidgetItem("Remove Orphans"))
         self.feature_list.addItem(QListWidgetItem("Inbox Tray"))
         self.feature_list.currentRowChanged.connect(self._on_feature_changed)
         v.addWidget(self.feature_list, 1)
 
-        sep = QFrame()
-        sep.setFrameShape(QFrame.HLine)
-        sep.setFrameShadow(QFrame.Plain)
-        v.addWidget(sep)
-
         self.cache_label = QLabel()
-        self.cache_label.setStyleSheet("color: #666; font-size: 11px;")
+        self.cache_label.setObjectName("cacheLabel")
         self._refresh_cache_label()
         v.addWidget(self.cache_label)
 

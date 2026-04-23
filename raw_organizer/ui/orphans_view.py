@@ -37,13 +37,14 @@ class OrphansView(QWidget):
         self.raw_folder: Path | None = None
 
         root = QVBoxLayout(self)
-        root.setContentsMargins(16, 16, 16, 16)
-        root.setSpacing(12)
+        root.setContentsMargins(24, 24, 24, 20)
+        root.setSpacing(16)
 
         root.addWidget(self._build_setup())
 
         splitter = QSplitter(Qt.Horizontal)
         splitter.setChildrenCollapsible(False)
+        splitter.setHandleWidth(8)
 
         self.list_widget = QListWidget()
         self.list_widget.setSelectionMode(QAbstractItemView.SingleSelection)
@@ -51,9 +52,10 @@ class OrphansView(QWidget):
         splitter.addWidget(self.list_widget)
 
         self.preview_label = QLabel("Select a file to preview")
+        self.preview_label.setObjectName("preview")
         self.preview_label.setAlignment(Qt.AlignCenter)
         self.preview_label.setMinimumWidth(360)
-        self.preview_label.setStyleSheet("color: #888; background: #111;")
+        self.preview_label.setAttribute(Qt.WA_StyledBackground, True)
         splitter.addWidget(self.preview_label)
 
         splitter.setStretchFactor(0, 1)
@@ -63,15 +65,15 @@ class OrphansView(QWidget):
         root.addWidget(self._build_actions())
 
         self.status_label = QLabel("")
-        self.status_label.setStyleSheet("color: #666;")
+        self.status_label.setObjectName("statusLabel")
         root.addWidget(self.status_label)
 
     def _build_setup(self) -> QWidget:
         box = QWidget()
         layout = QGridLayout(box)
         layout.setContentsMargins(0, 0, 0, 0)
-        layout.setHorizontalSpacing(8)
-        layout.setVerticalSpacing(6)
+        layout.setHorizontalSpacing(12)
+        layout.setVerticalSpacing(16)
 
         layout.addWidget(QLabel("Mode:"), 0, 0)
         self.single_radio = QRadioButton("Single folder (mixed)")
@@ -121,6 +123,7 @@ class OrphansView(QWidget):
         box = QWidget()
         layout = QHBoxLayout(box)
         layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(10)
 
         reveal_btn = QPushButton("Reveal in Finder")
         reveal_btn.clicked.connect(self._reveal_selected)

@@ -39,11 +39,11 @@ class InboxList(QListWidget):
         super().__init__()
         self.owner = owner
         self.setViewMode(QListWidget.IconMode)
-        self.setIconSize(QSize(160, 120))
-        self.setGridSize(QSize(180, 170))
+        self.setIconSize(QSize(180, 135))
+        self.setGridSize(QSize(204, 196))
         self.setResizeMode(QListWidget.Adjust)
         self.setMovement(QListWidget.Static)
-        self.setSpacing(8)
+        self.setSpacing(10)
         self.setUniformItemSizes(True)
         self.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.setAcceptDrops(True)
@@ -110,8 +110,8 @@ class InboxView(QWidget):
         self._raw_index: dict[str, list[Path]] = {}
 
         root = QVBoxLayout(self)
-        root.setContentsMargins(16, 16, 16, 16)
-        root.setSpacing(12)
+        root.setContentsMargins(24, 24, 24, 20)
+        root.setSpacing(16)
 
         root.addWidget(self._build_setup())
 
@@ -120,7 +120,7 @@ class InboxView(QWidget):
             "Then select tiles and drag them onto Lightroom — "
             "the matched RAW(s) will be sent over."
         )
-        hint.setStyleSheet("color: #888;")
+        hint.setObjectName("hint")
         hint.setWordWrap(True)
         root.addWidget(hint)
 
@@ -133,8 +133,8 @@ class InboxView(QWidget):
         box = QWidget()
         layout = QGridLayout(box)
         layout.setContentsMargins(0, 0, 0, 0)
-        layout.setHorizontalSpacing(8)
-        layout.setVerticalSpacing(6)
+        layout.setHorizontalSpacing(12)
+        layout.setVerticalSpacing(16)
 
         layout.addWidget(QLabel("RAW source folder:"), 0, 0)
         self.raw_path_label = QLabel("(none)")
@@ -160,7 +160,7 @@ class InboxView(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
 
         self.status_label = QLabel("0 in tray")
-        self.status_label.setStyleSheet("color: #666;")
+        self.status_label.setObjectName("statusLabel")
         layout.addWidget(self.status_label)
 
         layout.addStretch(1)
