@@ -96,11 +96,11 @@ class OrphansView(QWidget):
         self.raw_label = QLabel("RAW folder:")
         self.raw_path_label = QLabel("(none)")
         self.raw_path_label.setStyleSheet("color: #555;")
-        raw_btn = QPushButton("Choose…")
-        raw_btn.clicked.connect(self._pick_raw_folder)
+        self.raw_btn = QPushButton("Choose…")
+        self.raw_btn.clicked.connect(self._pick_raw_folder)
         layout.addWidget(self.raw_label, 2, 0)
         layout.addWidget(self.raw_path_label, 2, 1, 1, 2)
-        layout.addWidget(raw_btn, 2, 3)
+        layout.addWidget(self.raw_btn, 2, 3)
 
         layout.addWidget(QLabel("Method:"), 3, 0)
         self.method_combo = QComboBox()
@@ -143,11 +143,13 @@ class OrphansView(QWidget):
             self.jpg_label.setText("Folder:")
             self.raw_label.setVisible(False)
             self.raw_path_label.setVisible(False)
+            self.raw_btn.setVisible(False)
         else:
             self.jpg_label.setText("JPG folder:")
             self.raw_label.setText("RAW folder:")
             self.raw_label.setVisible(True)
             self.raw_path_label.setVisible(True)
+            self.raw_btn.setVisible(True)
 
     def _pick_jpg_folder(self) -> None:
         path = QFileDialog.getExistingDirectory(self, "Choose folder")
