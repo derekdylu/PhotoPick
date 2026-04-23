@@ -137,8 +137,18 @@ class OrphansView(QWidget):
         trash_all_btn.clicked.connect(self._trash_all)
         layout.addWidget(trash_all_btn)
 
+        clear_btn = QPushButton("Clear")
+        clear_btn.clicked.connect(self._clear_results)
+        layout.addWidget(clear_btn)
+
         layout.addStretch(1)
         return box
+
+    def _clear_results(self) -> None:
+        self.list_widget.clear()
+        self.preview_label.clear()
+        self.preview_label.setText("Select a file to preview")
+        self.status_label.setText("")
 
     def _update_pickers(self) -> None:
         single = self.single_radio.isChecked()
