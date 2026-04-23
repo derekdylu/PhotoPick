@@ -22,17 +22,42 @@ python -m raw_organizer.ui.app
 python raw_organizer.py --gui
 ```
 
-### Build a `.app` bundle
+### Build the installable Mac app (`.app` + `.dmg`)
+
+One command:
 
 ```bash
-pip install briefcase
-briefcase create macOS
-briefcase build macOS
-briefcase package macOS --no-sign      # for local use
-# or briefcase package macOS            # signed/notarised release
+./scripts/build_macos.sh
 ```
 
-The bundle ends up under `macOS/app/Raw Organizer/`.
+Requirements:
+- Python 3.10+ (the script auto-detects `python3.10`–`python3.13`; install via `brew install python@3.13` if you don't have one).
+- Xcode Command Line Tools (`xcode-select --install`).
+
+The script creates a build venv, installs [PyInstaller](https://pyinstaller.org/) and the GUI deps, then produces:
+- `dist/Raw Organizer.app` — the bundled macOS app (~120 MB).
+- `dist/Raw-Organizer-<version>.dmg` — a draggable installer (~50 MB).
+
+The build takes ~3 minutes on a clean checkout (most of which is downloading PySide6 wheels) and ~30 seconds on rebuilds.
+
+### Install from the DMG
+
+1. Double-click the `.dmg` → drag **Raw Organizer.app** into your `/Applications` folder.
+2. **First launch** (the build is ad-hoc signed, not notarised by Apple):
+   - Right-click **Raw Organizer.app** → **Open** → confirm in the Gatekeeper dialog.
+   - Or run once: `xattr -dr com.apple.quarantine "/Applications/Raw Organizer.app"`
+
+After the first launch, you can open it normally from Launchpad / Dock / Spotlight.
+
+### Signed release (optional)
+
+If you have an Apple Developer ID certificate:
+
+```bash
+./scripts/build_macos.sh --sign "Developer ID Application: Your Name (TEAMID)"
+```
+
+For full notarisation, run `xcrun notarytool submit dist/Raw-Organizer-<version>.dmg --apple-id ... --wait` after the build.
 
 ### Feature 1 — Remove Orphans
 
