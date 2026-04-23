@@ -1,137 +1,95 @@
 # RAW Organizer
 
-A Python tool to organize RAW and JPG files by removing orphaned files that don't have corresponding matches.
+A macOS app (with a CLI fallback) for managing RAW + JPG photo pairs.
 
-## Features
+Two features:
 
-- **File Discovery**: Automatically finds all JPG and RAW files in a directory
-- **Flexible Anchoring**: Choose to anchor on JPG files or RAW files
-- **Smart Matching**: Matches files based on base filename (without extension)
-- **Safe Operation**: Dry-run mode by default to preview changes
-- **Comprehensive Reporting**: Shows detailed results of the organization process
+1. **Remove Orphans** — find and delete RAW/JPG files that are missing their counterpart.
+2. **Inbox Tray → Lightroom** — drop JPGs you like onto a tray, then drag the matched RAW(s) straight into Lightroom.
 
-## Supported File Types
+Plus a global **Clear cache** action for thumbnail previews.
 
-### JPG Files
-- `.jpg`
-- `.jpeg`
+---
 
-### RAW Files
-- `.cr2`, `.cr3` (Canon)
-- `.nef` (Nikon)
-- `.arw` (Sony)
-- `.dng` (Adobe Digital Negative)
-- `.orf` (Olympus)
-- `.rw2` (Panasonic)
-- `.pef` (Pentax)
-- `.srw` (Samsung)
-- `.x3f` (Sigma)
+## The Mac app
 
-## Usage
+### Run from source
 
-### Basic Usage (Dry Run)
 ```bash
+pip install -r requirements.txt
+python -m raw_organizer.ui.app
+# or:
+python raw_organizer.py --gui
+```
+
+### Build a `.app` bundle
+
+```bash
+pip install briefcase
+briefcase create macOS
+briefcase build macOS
+briefcase package macOS --no-sign      # for local use
+# or briefcase package macOS            # signed/notarised release
+```
+
+The bundle ends up under `macOS/app/Raw Organizer/`.
+
+### Feature 1 — Remove Orphans
+
+- **Mode**: `Single folder` (RAW + JPG mixed) or `Two folders` (RAW and JPG in separate dirs).
+- **Comparison method**:
+  - `Anchor JPG` — list RAW files with no matching JPG.
+  - `Anchor RAW` — list JPG files with no matching RAW.
+  - `Both` — list anything missing its counterpart.
+- The orphan list shows filenames only. **Previews are loaded only when you click a row** — scrolling thousands of files costs nothing.
+- `Reveal in Finder` and `Move to Trash` (uses macOS Trash via `send2trash` — never a permanent delete).
+
+### Feature 2 — Inbox Tray
+
+- Pick a **RAW source folder**. The tray will look up matching RAWs by basename whenever you drop a JPG.
+- **Drag JPGs in** from Finder, Preview, browsers, anywhere — tiles appear, badged `✓ RAW` or `⚠ no RAW`.
+- **Multi-select**, then drag the tiles **out onto Lightroom** (the import window or a watched folder).
+- The drag payload is configurable:
+  - `RAW only` (default) — only the matched RAWs go to Lightroom. JPGs without a match are silently skipped.
+  - `JPG only` — just the JPGs.
+  - `Both` — both files of each pair.
+
+### Clear cache
+
+Removes `~/Library/Caches/RawOrganizer/thumbs/`. The next preview re-decodes from source.
+
+---
+
+## Supported file types
+
+**JPG**: `.jpg`, `.jpeg`
+**RAW**: `.cr2`, `.cr3`, `.nef`, `.arw`, `.dng`, `.orf`, `.rw2`, `.pef`, `.srw`, `.x3f`
+
+---
+
+## CLI
+
+The original CLI still works (no third-party deps for the CLI alone — `PySide6`/`rawpy`/etc. are only needed for the GUI):
+
+```bash
+# Single folder, anchor on JPG (default)
 python raw_organizer.py /path/to/photos
-```
 
-### Anchor on JPG files (default)
-```bash
-python raw_organizer.py /path/to/photos --anchor jpg
-```
+# Single folder, find orphans both directions
+python raw_organizer.py /path/to/photos --anchor both
 
-### Anchor on RAW files
-```bash
-python raw_organizer.py /path/to/photos --anchor raw
-```
+# Two-folder mode
+python raw_organizer.py --jpg-dir /path/jpg --raw-dir /path/raw --anchor raw
 
-### Actually delete files (use with caution!)
-```bash
+# Actually delete (otherwise dry-run)
 python raw_organizer.py /path/to/photos --execute
+
+# Launch the Mac app
+python raw_organizer.py --gui
 ```
 
-### Command Line Options
-
-- `directory`: Input directory to organize (required)
-- `--anchor {jpg,raw}`: File type to use as anchor (default: jpg)
-- `--dry-run`: Perform a dry run without deleting files (default)
-- `--execute`: Actually delete files (overrides --dry-run)
-
-## How It Works
-
-1. **Discovery**: Scans the specified directory for all JPG and RAW files
-2. **Anchoring**: Uses the specified file type (JPG or RAW) as the "anchor"
-3. **Matching**: Finds target files that have matching base names with anchor files
-4. **Cleanup**: Identifies and optionally deletes orphaned files (files without matches)
-5. **Reporting**: Provides a comprehensive report of the organization results
-
-## Example Scenarios
-
-### Scenario 1: Anchor on JPG files
-- Directory contains: `IMG_001.jpg`, `IMG_002.jpg`, `IMG_001.cr2`, `IMG_003.cr2`
-- Result: `IMG_003.cr2` is orphaned (no matching JPG) and will be deleted
-
-### Scenario 2: Anchor on RAW files
-- Directory contains: `IMG_001.jpg`, `IMG_002.jpg`, `IMG_001.cr2`, `IMG_003.cr2`
-- Result: `IMG_002.jpg` is orphaned (no matching RAW) and will be deleted
-
-## Safety Features
-
-- **Dry Run by Default**: Never deletes files unless explicitly requested
-- **Confirmation Prompt**: Asks for confirmation before deleting files
-- **Detailed Reporting**: Shows exactly which files will be/were deleted
-- **Error Handling**: Gracefully handles file access errors
-
-## Requirements
-
-- Python 3.6+
-- No external dependencies (uses only standard library)
-
-## Installation
-
-1. Clone or download the repository
-2. No additional installation required - just run the script!
-
-```bash
-python raw_organizer.py --help
-```
-
-## Example Output
-
-```
-Scanning directory: /path/to/photos
-Found 25 JPG files
-Found 20 RAW files
-
-Organizing with JPG files as anchor...
-Anchor files: 25
-Target files: 20
-
-Found 3 orphaned RAW files:
-  - /path/to/photos/IMG_999.cr2
-  - /path/to/photos/DSC_1234.nef
-  - /path/to/photos/untitled.arw
-
-[DRY RUN] Would delete 3 orphaned RAW files
-
-============================================================
-ORGANIZATION REPORT
-============================================================
-Anchor files (JPG): 25
-Target files (RAW): 20
-Orphaned files found: 3
-Files deleted: 0
-
-Orphaned RAW files:
-  - /path/to/photos/IMG_999.cr2
-  - /path/to/photos/DSC_1234.nef
-  - /path/to/photos/untitled.arw
-
-Deleted files:
-(none - dry run mode)
-
-============================================================
-```
+---
 
 ## License
 
-This project is open source and available under the MIT License.
+MIT
