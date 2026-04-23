@@ -48,6 +48,8 @@ class InboxList(QListWidget):
         self.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.setAcceptDrops(True)
         self.setDragEnabled(True)
+        self.setDragDropMode(QAbstractItemView.DragDrop)
+        self.viewport().setAcceptDrops(True)
         self.setDefaultDropAction(Qt.CopyAction)
         self.setDropIndicatorShown(True)
 
@@ -67,17 +69,24 @@ class InboxList(QListWidget):
     def dropEvent(self, event):
         urls = event.mimeData().urls()
         added = 0
+        skipped_scope = 0
         for url in urls:
             if not url.isLocalFile():
                 continue
             p = Path(url.toLocalFile())
-            if p.is_file() and is_jpg(p):
-                self.owner.add_jpg(p)
-                added += 1
+            if not (p.is_file() and is_jpg(p)):
+                continue
+            if not self.owner.is_in_jpg_scope(p):
+                skipped_scope += 1
+                continue
+            self.owner.add_jpg(p)
+            added += 1
         if added:
             event.acceptProposedAction()
         else:
             event.ignore()
+        if skipped_scope:
+            self.owner.note_out_of_scope(skipped_scope)
 
     # --- drag-out ------------------------------------------------------
     def startDrag(self, supportedActions):
@@ -106,6 +115,7 @@ class InboxList(QListWidget):
 class InboxView(QWidget):
     def __init__(self) -> None:
         super().__init__()
+        self.jpg_folder: Path | None = None
         self.raw_folder: Path | None = None
         self._raw_index: dict[str, list[Path]] = {}
 
@@ -115,19 +125,17 @@ class InboxView(QWidget):
 
         root.addWidget(self._build_setup())
 
-        hint = QLabel(
-            "Drag JPGs from Finder onto the tray below. "
-            "Then select tiles and drag them onto Lightroom — "
-            "the matched RAW(s) will be sent over."
-        )
-        hint.setObjectName("hint")
-        hint.setWordWrap(True)
-        root.addWidget(hint)
+        self.hint_label = QLabel()
+        self.hint_label.setObjectName("hint")
+        self.hint_label.setWordWrap(True)
+        root.addWidget(self.hint_label)
 
         self.list_widget = InboxList(self)
         root.addWidget(self.list_widget, 1)
 
         root.addWidget(self._build_footer())
+
+        self._update_enabled()
 
     def _build_setup(self) -> QWidget:
         box = QWidget()
@@ -136,20 +144,28 @@ class InboxView(QWidget):
         layout.setHorizontalSpacing(12)
         layout.setVerticalSpacing(16)
 
-        layout.addWidget(QLabel("RAW source folder:"), 0, 0)
+        layout.addWidget(QLabel("JPG source folder:"), 0, 0)
+        self.jpg_path_label = QLabel("(none)")
+        self.jpg_path_label.setStyleSheet("color: #555;")
+        jpg_btn = QPushButton("Choose…")
+        jpg_btn.clicked.connect(self._pick_jpg_folder)
+        layout.addWidget(self.jpg_path_label, 0, 1)
+        layout.addWidget(jpg_btn, 0, 2)
+
+        layout.addWidget(QLabel("RAW source folder:"), 1, 0)
         self.raw_path_label = QLabel("(none)")
         self.raw_path_label.setStyleSheet("color: #555;")
         raw_btn = QPushButton("Choose…")
         raw_btn.clicked.connect(self._pick_raw_folder)
-        layout.addWidget(self.raw_path_label, 0, 1)
-        layout.addWidget(raw_btn, 0, 2)
+        layout.addWidget(self.raw_path_label, 1, 1)
+        layout.addWidget(raw_btn, 1, 2)
 
-        layout.addWidget(QLabel("Drag-out payload:"), 1, 0)
+        layout.addWidget(QLabel("Drag-out payload:"), 2, 0)
         self.payload_combo = QComboBox()
         self.payload_combo.addItem("RAW only (default)", PAYLOAD_RAW)
         self.payload_combo.addItem("JPG only", PAYLOAD_JPG)
         self.payload_combo.addItem("Both JPG + RAW", PAYLOAD_BOTH)
-        layout.addWidget(self.payload_combo, 1, 1, 1, 2)
+        layout.addWidget(self.payload_combo, 2, 1, 1, 2)
 
         layout.setColumnStretch(1, 1)
         return box
@@ -171,7 +187,15 @@ class InboxView(QWidget):
 
         return box
 
-    # --- raw folder ----------------------------------------------------
+    # --- folder pickers ------------------------------------------------
+    def _pick_jpg_folder(self) -> None:
+        path = QFileDialog.getExistingDirectory(self, "Choose JPG source folder")
+        if not path:
+            return
+        self.jpg_folder = Path(path)
+        self.jpg_path_label.setText(path)
+        self._update_enabled()
+
     def _pick_raw_folder(self) -> None:
         path = QFileDialog.getExistingDirectory(self, "Choose RAW source folder")
         if not path:
@@ -180,6 +204,24 @@ class InboxView(QWidget):
         self.raw_path_label.setText(path)
         self._rebuild_raw_index()
         self._rematch_all()
+        self._update_enabled()
+
+    def _both_folders_set(self) -> bool:
+        return self.jpg_folder is not None and self.raw_folder is not None
+
+    def _update_enabled(self) -> None:
+        ready = self._both_folders_set()
+        self.list_widget.setEnabled(ready)
+        if ready:
+            self.hint_label.setText(
+                "Drag JPGs from Finder onto the tray below. "
+                "Then select tiles and drag them onto Lightroom — "
+                "the matched RAW(s) will be sent over."
+            )
+        else:
+            self.hint_label.setText(
+                "Set both the JPG and RAW source folders above to enable the tray."
+            )
 
     def _rebuild_raw_index(self) -> None:
         self._raw_index.clear()
@@ -240,7 +282,7 @@ class InboxView(QWidget):
         self.list_widget.clear()
         self._update_status()
 
-    def _update_status(self) -> None:
+    def _update_status(self, suffix: str = "") -> None:
         total = self.list_widget.count()
         matched = sum(
             1
@@ -248,8 +290,25 @@ class InboxView(QWidget):
             if self.list_widget.item(i).data(_ROLE_RAW) is not None
         )
         missing = total - matched
-        self.status_label.setText(
+        text = (
             f"{total} in tray · {matched} RAW match{'es' if matched != 1 else ''} · {missing} missing"
+        )
+        if suffix:
+            text = f"{text} · {suffix}"
+        self.status_label.setText(text)
+
+    def is_in_jpg_scope(self, path: Path) -> bool:
+        if self.jpg_folder is None:
+            return False
+        try:
+            path.resolve().relative_to(self.jpg_folder.resolve())
+            return True
+        except ValueError:
+            return False
+
+    def note_out_of_scope(self, count: int) -> None:
+        self._update_status(
+            f"skipped {count} file{'s' if count != 1 else ''} outside JPG folder"
         )
 
     # --- drag payload --------------------------------------------------
