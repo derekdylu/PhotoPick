@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/PhotoPick.png" alt="PhotoPick" width="140" />
+<img src="assets/hero.jpg" alt="PhotoPick" width="100%" />
 
 # PhotoPick
 
