@@ -1,13 +1,5 @@
 const brands = [
-  "Canon",
-  "Nikon",
-  "Sony",
-  "Fuji",
-  "Pentax",
-  "Panasonic",
-  "Sigma",
-  "Olympus",
-  "Adobe DNG",
+  `.cr2`, `.cr3`, `.nef`, `.arw`, `.dng`, `.orf`, `.rw2`, `.pef`, `.srw`, `.x3f`,
 ];
 
 export default function SupportedCameras() {

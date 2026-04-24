@@ -30,7 +30,7 @@ export default function Hero() {
         <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:gap-4">
           <Link
             href="https://github.com/derekdylu/PhotoPick/releases"
-            className="inline-flex items-center justify-center rounded-full bg-brand px-7 py-3 text-base font-semibold text-white shadow-lg shadow-brand/30 transition hover:bg-brand/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+            className="inline-flex items-center justify-center rounded-full bg-brand px-7 py-3 text-base font-semibold text-white shadow-lg shadow-brand/30 transition hover:bg-brand/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand hover:translate-y-[-2px]"
           >
             Download for macOS
           </Link>
