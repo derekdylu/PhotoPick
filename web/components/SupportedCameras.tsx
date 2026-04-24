@@ -12,8 +12,14 @@ const brands = [
 
 export default function SupportedCameras() {
   return (
-    <section className="mx-auto max-w-5xl px-6 py-20">
-      <h2 className="text-center text-sm font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+    <section
+      aria-labelledby="cameras-heading"
+      className="mx-auto max-w-5xl px-6 py-20"
+    >
+      <h2
+        id="cameras-heading"
+        className="text-center text-sm font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400"
+      >
         Supported RAW formats
       </h2>
       <div className="mt-8 flex flex-wrap justify-center gap-3">

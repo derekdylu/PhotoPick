@@ -19,9 +19,13 @@ export default function Screenshots() {
   return (
     <section
       id="screenshots"
+      aria-labelledby="screenshots-heading"
       className="mx-auto max-w-6xl px-6 py-20"
     >
-      <h2 className="text-center text-3xl font-bold tracking-tight text-brand-fg dark:text-white sm:text-4xl">
+      <h2
+        id="screenshots-heading"
+        className="text-center text-3xl font-bold tracking-tight text-brand-fg dark:text-white sm:text-4xl"
+      >
         See it in motion.
       </h2>
       <div className="mt-14 grid gap-10 md:grid-cols-2">

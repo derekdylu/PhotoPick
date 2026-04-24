@@ -11,14 +11,17 @@ const inter = Inter({
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://photopick.vercel.app";
 
+const title = "PhotoPick — RAW + JPG pairing for macOS";
+const description =
+  "Free macOS app for photographers shooting RAW + JPG. Remove orphaned files and batch-move your picks into Lightroom in seconds.";
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "PhotoPick — RAW + JPG pairing for macOS",
+    default: title,
     template: "%s · PhotoPick",
   },
-  description:
-    "A lightweight macOS app for photographers who shoot RAW + JPG. Remove orphans, batch-move picks into Lightroom — in seconds.",
+  description,
   applicationName: "PhotoPick",
   authors: [{ name: "Derek Lu", url: "https://derekdylu.com" }],
   creator: "Derek Lu",
@@ -26,10 +29,17 @@ export const metadata: Metadata = {
   keywords: [
     "PhotoPick",
     "RAW JPG pairing",
+    "RAW photo manager",
     "macOS photo app",
     "Lightroom workflow",
+    "photo culling",
     "photography tools",
     "orphan files",
+    "Canon CR3",
+    "Nikon NEF",
+    "Sony ARW",
+    "Fuji RAF",
+    "DNG",
     "Derek Lu",
   ],
   alternates: { canonical: "/" },
@@ -37,23 +47,33 @@ export const metadata: Metadata = {
     type: "website",
     url: "/",
     siteName: "PhotoPick",
-    title: "PhotoPick — RAW + JPG pairing for macOS",
-    description:
-      "Remove orphaned RAW/JPG files and batch-move your picks into Lightroom. Built for dual-format photographers.",
+    title,
+    description,
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "PhotoPick — RAW + JPG pairing for macOS",
-    description:
-      "Remove orphaned RAW/JPG files and batch-move your picks into Lightroom. Built for dual-format photographers.",
+    title,
+    description,
     creator: "@derekdylu",
   },
-  icons: {
-    icon: [{ url: "/PhotoPick.png", type: "image/png" }],
-    apple: [{ url: "/PhotoPick.png", type: "image/png" }],
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
   category: "technology",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
 };
 
 export const viewport: Viewport = {

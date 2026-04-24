@@ -47,8 +47,15 @@ const features = [
 
 export default function Features() {
   return (
-    <section id="features" className="mx-auto max-w-5xl px-6 py-20">
-      <h2 className="text-center text-3xl font-bold tracking-tight text-brand-fg dark:text-white sm:text-4xl">
+    <section
+      id="features"
+      aria-labelledby="features-heading"
+      className="mx-auto max-w-5xl px-6 py-20"
+    >
+      <h2
+        id="features-heading"
+        className="text-center text-3xl font-bold tracking-tight text-brand-fg dark:text-white sm:text-4xl"
+      >
         Two tools. One clean workflow.
       </h2>
       <p className="mx-auto mt-4 max-w-2xl text-center text-lg text-slate-600 dark:text-slate-300">

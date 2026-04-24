@@ -37,25 +37,12 @@ production URL once the Vercel domain is decided. This value is used for
 
 ## Deployment
 
-The GitHub Actions workflow at `.github/workflows/web-deploy.yml` builds and
-deploys to **Vercel** on every push to `main` that touches `web/**` (production
-deploy) and on PRs touching `web/**` (preview deploy).
+Deployed via Vercel's native Git integration. In the Vercel project:
 
-### One-time setup
+- **Root Directory**: `web`
+- **Framework Preset**: Next.js
+- **Environment Variables**: set `NEXT_PUBLIC_SITE_URL` to the production
+  domain (used for `metadataBase`, canonical URLs, sitemap, and JSON-LD)
 
-1. Create a Vercel project for this site:
-   ```bash
-   cd web
-   npx vercel link
-   ```
-   Accept defaults; Vercel will create `.vercel/project.json` locally (gitignored).
-2. Grab the org and project IDs from `.vercel/project.json`.
-3. Create a Vercel token at https://vercel.com/account/tokens.
-4. In GitHub repo settings → **Secrets and variables → Actions**, add:
-   - `VERCEL_TOKEN`
-   - `VERCEL_ORG_ID`
-   - `VERCEL_PROJECT_ID`
-5. In the Vercel project settings, set `NEXT_PUBLIC_SITE_URL` as an environment
-   variable pointing to the production domain.
-
-That's it — subsequent pushes to `web/**` deploy automatically.
+Pushes to `main` trigger a production deploy; PRs get preview deploys
+automatically.
