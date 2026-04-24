@@ -26,7 +26,7 @@ from .orphans_view import OrphansView
 class MainWindow(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
-        self.setWindowTitle("Raw Organizer")
+        self.setWindowTitle("PhotoPick")
         self.setUnifiedTitleAndToolBarOnMac(True)
 
         central = QWidget(self)
@@ -57,7 +57,7 @@ class MainWindow(QMainWindow):
         v.setContentsMargins(14, 18, 14, 14)
         v.setSpacing(10)
 
-        title = QLabel("Raw Organizer")
+        title = QLabel("PhotoPick")
         title.setObjectName("sidebarTitle")
         v.addWidget(title)
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build a Raw Organizer .app bundle and .dmg installer.
+# Build a PhotoPick .app bundle and .dmg installer.
 #
 # Uses PyInstaller for the .app bundle (most reliable for PySide6 + rawpy)
 # and hdiutil for the .dmg (no extra Homebrew deps required).
@@ -9,8 +9,8 @@
 #   ./scripts/build_macos.sh --sign IDENT   # sign with Developer ID "IDENT"
 #
 # Output:
-#   dist/Raw Organizer.app
-#   dist/Raw-Organizer-<version>.dmg
+#   dist/PhotoPick.app
+#   dist/PhotoPick-<version>.dmg
 
 set -euo pipefail
 
@@ -18,8 +18,8 @@ PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$PROJECT_ROOT"
 
 VERSION="$(/usr/bin/grep -E '^version' pyproject.toml | head -1 | /usr/bin/sed -E 's/.*"([^"]+)".*/\1/')"
-APP_NAME="Raw Organizer"
-DMG_NAME="Raw-Organizer-${VERSION}"
+APP_NAME="PhotoPick"
+DMG_NAME="PhotoPick-${VERSION}"
 
 # --- pick a Python 3.10+ interpreter --------------------------------------
 PYTHON=""
@@ -93,7 +93,8 @@ pyinstaller \
     --windowed \
     --noconfirm \
     --name "$APP_NAME" \
-    --osx-bundle-identifier "local.rawOrganizer" \
+    --icon "$PROJECT_ROOT/assets/PhotoPick.icns" \
+    --osx-bundle-identifier "local.photoPick" \
     "${EXCLUDE_ARGS[@]}" \
     --hidden-import PySide6.QtCore \
     --hidden-import PySide6.QtGui \
@@ -102,7 +103,7 @@ pyinstaller \
     --hidden-import PIL.Image \
     --hidden-import send2trash \
     --paths "$PROJECT_ROOT" \
-    --collect-submodules raw_organizer \
+    --collect-submodules photopick \
     "$PROJECT_ROOT/scripts/_launcher.py"
 
 APP_BUNDLE="dist/${APP_NAME}.app"

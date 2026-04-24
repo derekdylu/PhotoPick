@@ -15,7 +15,7 @@ from .matcher import is_jpg, is_raw
 
 THUMB_SIZE = 512  # max edge in px
 
-_CACHE_ROOT = Path.home() / "Library" / "Caches" / "RawOrganizer" / "thumbs"
+_CACHE_ROOT = Path.home() / "Library" / "Caches" / "PhotoPick" / "thumbs"
 
 
 def cache_root() -> Path:

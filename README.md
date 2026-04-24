@@ -1,4 +1,4 @@
-# RAW Organizer
+# PhotoPick
 
 A macOS app (with a CLI fallback) for managing RAW + JPG photo pairs.
 
@@ -17,9 +17,9 @@ Plus a global **Clear cache** action for thumbnail previews.
 
 ```bash
 pip install -r requirements.txt
-python -m raw_organizer.ui.app
+python -m photopick.ui.app
 # or:
-python raw_organizer.py --gui
+python photopick.py --gui
 ```
 
 ### Build the installable Mac app (`.app` + `.dmg`)
@@ -35,17 +35,17 @@ Requirements:
 - Xcode Command Line Tools (`xcode-select --install`).
 
 The script creates a build venv, installs [PyInstaller](https://pyinstaller.org/) and the GUI deps, then produces:
-- `dist/Raw Organizer.app` — the bundled macOS app (~120 MB).
-- `dist/Raw-Organizer-<version>.dmg` — a draggable installer (~50 MB).
+- `dist/PhotoPick.app` — the bundled macOS app (~120 MB).
+- `dist/PhotoPick-<version>.dmg` — a draggable installer (~50 MB).
 
 The build takes ~3 minutes on a clean checkout (most of which is downloading PySide6 wheels) and ~30 seconds on rebuilds.
 
 ### Install from the DMG
 
-1. Double-click the `.dmg` → drag **Raw Organizer.app** into your `/Applications` folder.
+1. Double-click the `.dmg` → drag **PhotoPick.app** into your `/Applications` folder.
 2. **First launch** (the build is ad-hoc signed, not notarised by Apple):
-   - Right-click **Raw Organizer.app** → **Open** → confirm in the Gatekeeper dialog.
-   - Or run once: `xattr -dr com.apple.quarantine "/Applications/Raw Organizer.app"`
+   - Right-click **PhotoPick.app** → **Open** → confirm in the Gatekeeper dialog.
+   - Or run once: `xattr -dr com.apple.quarantine "/Applications/PhotoPick.app"`
 
 After the first launch, you can open it normally from Launchpad / Dock / Spotlight.
 
@@ -57,7 +57,7 @@ If you have an Apple Developer ID certificate:
 ./scripts/build_macos.sh --sign "Developer ID Application: Your Name (TEAMID)"
 ```
 
-For full notarisation, run `xcrun notarytool submit dist/Raw-Organizer-<version>.dmg --apple-id ... --wait` after the build.
+For full notarisation, run `xcrun notarytool submit dist/PhotoPick-<version>.dmg --apple-id ... --wait` after the build.
 
 ### Feature 1 — Remove Orphans
 
@@ -81,7 +81,7 @@ For full notarisation, run `xcrun notarytool submit dist/Raw-Organizer-<version>
 
 ### Clear cache
 
-Removes `~/Library/Caches/RawOrganizer/thumbs/`. The next preview re-decodes from source.
+Removes `~/Library/Caches/PhotoPick/thumbs/`. The next preview re-decodes from source.
 
 ---
 
@@ -98,19 +98,19 @@ The original CLI still works (no third-party deps for the CLI alone — `PySide6
 
 ```bash
 # Single folder, anchor on JPG (default)
-python raw_organizer.py /path/to/photos
+python photopick.py /path/to/photos
 
 # Single folder, find orphans both directions
-python raw_organizer.py /path/to/photos --anchor both
+python photopick.py /path/to/photos --anchor both
 
 # Two-folder mode
-python raw_organizer.py --jpg-dir /path/jpg --raw-dir /path/raw --anchor raw
+python photopick.py --jpg-dir /path/jpg --raw-dir /path/raw --anchor raw
 
 # Actually delete (otherwise dry-run)
-python raw_organizer.py /path/to/photos --execute
+python photopick.py /path/to/photos --execute
 
 # Launch the Mac app
-python raw_organizer.py --gui
+python photopick.py --gui
 ```
 
 ---

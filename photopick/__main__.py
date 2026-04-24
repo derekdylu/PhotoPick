@@ -1,4 +1,4 @@
-"""`python -m raw_organizer` → launches the Mac app."""
+"""`python -m photopick` → launches the Mac app."""
 
 from .ui.app import main
 

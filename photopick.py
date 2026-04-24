@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""RAW Organizer CLI — thin wrapper around raw_organizer.core.
+"""PhotoPick CLI — thin wrapper around photopick.core.
 
-For the Mac app, run: python -m raw_organizer.ui.app
+For the Mac app, run: python -m photopick.ui.app
 """
 
 from __future__ import annotations
@@ -10,7 +10,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from raw_organizer.core import (
+from photopick.core import (
     ComparisonMethod,
     classify,
     scan_one_folder,
@@ -48,7 +48,7 @@ def main() -> int:
     args = parser.parse_args()
 
     if args.gui:
-        from raw_organizer.ui.app import main as gui_main
+        from photopick.ui.app import main as gui_main
 
         return gui_main()
 
