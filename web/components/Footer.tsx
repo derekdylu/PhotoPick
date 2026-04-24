@@ -9,10 +9,10 @@ const dict = {
     license: "MIT License",
   },
   zh: {
-    builtByPrefix: "由",
-    builtBySuffix: " 打造",
+    builtByPrefix: "Built by",
+    builtBySuffix: "",
     github: "GitHub",
-    license: "MIT 授權",
+    license: "MIT License",
   },
 } as const;
 

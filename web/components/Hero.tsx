@@ -13,12 +13,12 @@ const dict = {
     small: "Free · Open source · macOS 12+ · Apple Silicon & Intel",
   },
   zh: {
-    heading1: "RAW + JPG，自動配對。",
-    heading2: "孤兒檔，一鍵清空。",
+    heading1: "RAW + JPG 自動配對。",
+    heading2: "孤兒檔一鍵清空。",
     subheading:
       "專為同時拍攝 RAW + JPG 的攝影師設計的輕量 macOS 應用程式。清除未配對檔案、批次把選好的 RAW 丟進 Lightroom，只需要幾秒鐘。",
-    ctaDownload: "下載 macOS 版本",
-    ctaGithub: "查看 GitHub",
+    ctaDownload: "下載 (macOS)",
+    ctaGithub: "檢視 GitHub",
     small: "免費 · 開放原始碼 · macOS 12+ · Apple Silicon 與 Intel",
   },
 } as const;

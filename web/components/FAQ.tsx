@@ -77,6 +77,9 @@ const dict: Record<Locale, { heading: string; faqs: FAQ[] }> = {
               no longer works — the dialog only offers &ldquo;Move to
               Trash&rdquo;, so use Option A or Option B.
             </p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              * Actual risks are at your own discretion.
+            </p>
           </div>
         ),
       },
@@ -87,7 +90,7 @@ const dict: Record<Locale, { heading: string; faqs: FAQ[] }> = {
     faqs: [
       {
         q: "PhotoPick 是做什麼的？",
-        a: "PhotoPick 是為同時拍攝 RAW + JPG 的 macOS 攝影師設計的工具。它會找出沒有配對的檔案讓你丟進垃圾桶，也能把你挑好的 JPG 拖進收件匣托盤，一次把對應的 RAW 批次搬到 Lightroom 或任何資料夾。",
+        a: "PhotoPick 是為同時拍攝 RAW + JPG 的 macOS 攝影師設計的工具。它會找出沒有配對的檔案讓你丟進垃圾桶，也能把你挑好的 JPG 拖進托盤暫存區，一次把對應的 RAW 批次搬到 Lightroom 或任何資料夾。",
       },
       {
         q: "PhotoPick 支援哪些 RAW 格式？",
@@ -146,6 +149,9 @@ const dict: Record<Locale, { heading: string; faqs: FAQ[] }> = {
             <p className="text-sm text-slate-500 dark:text-slate-400">
               macOS Sequoia 提醒：舊版「右鍵 → 打開」的繞過法已經失效 ——
               該對話框現在只剩「移到垃圾桶」一個按鈕，請改用方法 A 或 B。
+            </p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              * 實際風險請自行評估。
             </p>
           </div>
         ),

@@ -22,7 +22,7 @@ const dict = {
     ],
   },
   zh: {
-    heading: "實際畫面。",
+    heading: "實際畫面",
     shots: [
       {
         src: "/screenshots/orphans.jpg",
@@ -32,9 +32,9 @@ const dict = {
       },
       {
         src: "/screenshots/inbox.jpg",
-        alt: "PhotoPick — 收件匣托盤畫面，擺放準備搬運的 JPG 精選",
-        caption: "收件匣托盤",
-        subcaption: "把你要的 JPG 丟進來，它們的 RAW 會跟著進 Lightroom 或任何資料夾。",
+        alt: "PhotoPick — 托盤暫存區畫面，擺放準備搬運的 JPG 精選",
+        caption: "托盤暫存區",
+        subcaption: "把你要的 JPG 丟進托盤暫存區，它們的 RAW 會跟著進 Lightroom 或任何資料夾。",
       },
     ],
   },

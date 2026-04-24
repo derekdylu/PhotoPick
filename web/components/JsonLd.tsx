@@ -105,7 +105,7 @@ const faqByLocale: Record<Locale, object> = {
         name: 'macOS says PhotoPick "is damaged" or "is malware". How do I open it?',
         acceptedAnswer: {
           "@type": "Answer",
-          text: 'PhotoPick is ad-hoc signed and not notarised by Apple, so Gatekeeper blocks the first launch. Option A (Terminal): run "sudo xattr -dr com.apple.quarantine /Applications/PhotoPick.app" then double-click the app. Option B (GUI): after the warning appears, click Cancel, open System Settings → Privacy & Security, scroll to the Security section, click "Open Anyway" next to the PhotoPick notice, authenticate, then launch the app and confirm Open. On macOS Sequoia the old "right-click → Open" trick no longer works.',
+          text: 'PhotoPick is ad-hoc signed and not notarised by Apple, so Gatekeeper blocks the first launch. Option A (Terminal): run "sudo xattr -dr com.apple.quarantine /Applications/PhotoPick.app" then double-click the app. Option B (GUI): after the warning appears, click Cancel, open System Settings → Privacy & Security, scroll to the Security section, click "Open Anyway" next to the PhotoPick notice, authenticate, then launch the app and confirm Open. On macOS Sequoia the old "right-click → Open" trick no longer works. * Actual risks are at your own discretion.',
         },
       },
     ],
@@ -119,7 +119,7 @@ const faqByLocale: Record<Locale, object> = {
         name: "PhotoPick 是做什麼的？",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "PhotoPick 是為同時拍攝 RAW + JPG 的 macOS 攝影師設計的工具。它會找出沒有配對的檔案讓你丟進垃圾桶，也能把你挑好的 JPG 拖進收件匣托盤，一次把對應的 RAW 批次搬到 Lightroom 或任何資料夾。",
+          text: "PhotoPick 是為同時拍攝 RAW + JPG 的 macOS 攝影師設計的工具。它會找出沒有配對的檔案讓你丟進垃圾桶，也能把你挑好的 JPG 拖進托盤暫存區，一次把對應的 RAW 批次搬到 Lightroom 或任何資料夾。",
         },
       },
       {
@@ -151,7 +151,7 @@ const faqByLocale: Record<Locale, object> = {
         name: "macOS 顯示 PhotoPick「已損毀」或「是惡意軟體」，要怎麼打開？",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "PhotoPick 是 ad-hoc 簽章、沒有經過 Apple notarization，所以 Gatekeeper 會擋下第一次啟動。方法 A（Terminal）：執行 sudo xattr -dr com.apple.quarantine /Applications/PhotoPick.app，然後正常雙擊打開。方法 B（GUI）：先雙擊 PhotoPick 讓警告出現並按取消，打開系統設定 → 隱私權與安全性，滑到安全性區塊按 PhotoPick 旁的「仍要打開」，驗證後再次啟動並在對話框按「打開」。macOS Sequoia 上舊版「右鍵 → 打開」的繞過法已失效。",
+          text: "PhotoPick 是 ad-hoc 簽章、沒有經過 Apple notarization，所以 Gatekeeper 會擋下第一次啟動。方法 A（Terminal）：執行 sudo xattr -dr com.apple.quarantine /Applications/PhotoPick.app，然後正常雙擊打開。方法 B（GUI）：先雙擊 PhotoPick 讓警告出現並按取消，打開系統設定 → 隱私權與安全性，滑到安全性區塊按 PhotoPick 旁的「仍要打開」，驗證後再次啟動並在對話框按「打開」。macOS Sequoia 上舊版「右鍵 → 打開」的繞過法已失效。* 實際風險請自行評估。",
         },
       },
     ],

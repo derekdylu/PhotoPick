@@ -3,7 +3,7 @@ import type { Locale } from "@/lib/i18n";
 const dict = {
   en: {
     heading: "Two tools. One clean workflow.",
-    subheading: "PhotoPick stays out of your way until you need it.",
+    subheading: "PhotoPick speeds up your photo cleanup process.",
     items: [
       {
         title: "Remove Orphans",
@@ -19,7 +19,7 @@ const dict = {
   },
   zh: {
     heading: "兩個工具，一套乾淨流程。",
-    subheading: "PhotoPick 平時不打擾你，只在你需要的時候出現。",
+    subheading: "PhotoPick 加速你的照片整理流程。",
     items: [
       {
         title: "移除孤兒檔",
@@ -27,9 +27,9 @@ const dict = {
           "掃描任何資料夾，安全地把失去配對的 RAW 或 JPG 丟進垃圾桶，讓你的照片庫保持一致、乾淨。",
       },
       {
-        title: "收件匣托盤",
+        title: "托盤暫存區",
         description:
-          "把你喜歡的 JPG 拖進托盤，一鍵把對應的 RAW 搬進 Lightroom 或任何資料夾。",
+          "把你喜歡的 JPG 拖進托盤暫存區，一鍵把對應的 RAW 搬進 Lightroom 或任何資料夾。",
       },
     ],
   },

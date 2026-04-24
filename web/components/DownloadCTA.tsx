@@ -13,10 +13,10 @@ const dict = {
   zh: {
     heading: "準備整理你的照片庫了嗎？",
     subheading:
-      "PhotoPick 免費且開放原始碼。下載最新版本，或自己從原始碼 build。",
+      "PhotoPick 免費且開放原始碼。",
     ctaPrimary: "下載最新版本",
-    ctaSecondary: "從原始碼 build",
-    small: "macOS 12 Monterey 以上 · Apple Silicon 與 Intel",
+    ctaSecondary: "檢視 GitHub",
+    small: "macOS 12 Monterey 以上 · Apple Silicon & Intel",
   },
 } as const;
 
