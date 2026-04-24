@@ -84,6 +84,14 @@ const faq = {
         text: "Yes. PhotoPick runs natively on both Apple Silicon and Intel Macs. macOS 12 Monterey or later is required.",
       },
     },
+    {
+      "@type": "Question",
+      name: 'macOS says PhotoPick "is damaged" or "is malware". How do I open it?',
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: 'PhotoPick is ad-hoc signed and not notarised by Apple, so Gatekeeper blocks the first launch. Option A (Terminal): run "sudo xattr -dr com.apple.quarantine /Applications/PhotoPick.app" then double-click the app. Option B (GUI): after the warning appears, click Cancel, open System Settings → Privacy & Security, scroll to the Security section, click "Open Anyway" next to the PhotoPick notice, authenticate, then launch the app and confirm Open. On macOS Sequoia the old "right-click → Open" trick no longer works.',
+      },
+    },
   ],
 };
 

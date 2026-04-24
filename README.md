@@ -55,32 +55,46 @@ python photopick.py --gui
 
 ---
 
-## First launch — macOS 擋下 "PhotoPick is damaged" / 「已損毀」/ "is malware"
+## First launch — "PhotoPick is damaged" / "is malware" warning
 
-PhotoPick 目前是 ad-hoc 簽章、沒有 Apple notarization。第一次打開時 macOS
-(尤其 Sequoia 15.x) 很可能會跳出：
+PhotoPick is ad-hoc signed and **not** notarised by Apple. The first time you
+open it, macOS (especially Sequoia 15.x) will likely show:
 
 > "PhotoPick" is damaged and can't be opened. You should move it to the Trash.
-> 「PhotoPick」已損毀，無法打開。您應該將其丟到垃圾桶。
 
-這**不是**因為 app 真的有惡意 — 是 Gatekeeper 對沒有 Apple 簽章、又帶
-quarantine 旗標的 app 的預設反應。你自己 build 出來的，或從本專案 Releases
-下載的，都會是這個狀態。移除 quarantine 旗標即可：
+This is **not** because the app is actually malicious — it's Gatekeeper's
+default reaction to any app that lacks an Apple-issued signature and carries
+the quarantine flag set by Safari/Finder on download. Builds you produced
+yourself and downloads from this project's Releases both land in this state.
+
+Pick either fix below — you only need to do it once.
+
+### Option A — Terminal (one command)
 
 ```bash
-# app 已拖到 /Applications
+# App is in /Applications
 sudo xattr -dr com.apple.quarantine /Applications/PhotoPick.app
 
-# app 還在 DMG / Downloads
+# App is still in ~/Downloads
 xattr -dr com.apple.quarantine ~/Downloads/PhotoPick.app
 ```
 
-然後正常雙擊開啟。這個指令只需要跑一次。
+Then double-click PhotoPick normally.
 
-> **macOS Sequoia 提醒**：舊版「右鍵 → 打開」的繞過法在 Sequoia 上已經
-> **失效** — 該對話框只有「移到垃圾桶」一個按鈕。請用上面的 `xattr`
-> 指令，或到 **系統設定 → 隱私權與安全性**，滑到最下面會看到
-> 「已封鎖 PhotoPick…」，點「**仍要打開**」。
+### Option B — GUI (no Terminal)
+
+1. Double-click PhotoPick so the "is damaged" / "is malware" dialog appears,
+   then click **Cancel** (do **not** click "Move to Trash").
+2. Open **System Settings → Privacy & Security**.
+3. Scroll to the **Security** section. You'll see a line like
+   *"PhotoPick was blocked to protect your Mac."*
+4. Click **Open Anyway** next to it. Authenticate with Touch ID or your
+   password.
+5. Launch PhotoPick again — confirm **Open** in the follow-up dialog.
+
+> macOS Sequoia note: the old "right-click → Open" workaround **no longer
+> works**. The damaged/malware dialog in Sequoia only shows a "Move to Trash"
+> button, so you must use Option A or Option B above.
 
 ### Developer ID signing (optional)
 
