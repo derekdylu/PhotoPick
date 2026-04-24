@@ -22,12 +22,12 @@ Works on RAW from Canon, Nikon, Sony, Fuji, Pentax, Panasonic, Sigma, Olympus, a
 
 ## Install
 
-Pre-built `.dmg` releases will be published on the [**GitHub Releases**](https://github.com/dereklu/PhotoPick/releases) page. Until then, build from source — it's one command.
+Pre-built `.dmg` releases will be published on the [**GitHub Releases**](https://github.com/derekdylu/PhotoPick/releases) page. Until then, build from source — it's one command.
 
 ### Build from source
 
 ```bash
-git clone https://github.com/dereklu/PhotoPick.git
+git clone https://github.com/derekdylu/PhotoPick.git
 cd PhotoPick
 ./scripts/build_macos.sh
 ```
