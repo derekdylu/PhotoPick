@@ -55,14 +55,32 @@ python photopick.py --gui
 
 ---
 
-## First launch (ad-hoc signed builds)
+## First launch — macOS 擋下 "PhotoPick is damaged" / 「已損毀」/ "is malware"
 
-Local builds are ad-hoc signed, not notarised. The first time you open `PhotoPick.app`:
+PhotoPick 目前是 ad-hoc 簽章、沒有 Apple notarization。第一次打開時 macOS
+(尤其 Sequoia 15.x) 很可能會跳出：
 
-- Right-click → **Open** → confirm in the Gatekeeper dialog, **or**
-- `xattr -dr com.apple.quarantine "/Applications/PhotoPick.app"`
+> "PhotoPick" is damaged and can't be opened. You should move it to the Trash.
+> 「PhotoPick」已損毀，無法打開。您應該將其丟到垃圾桶。
 
-After that it opens normally.
+這**不是**因為 app 真的有惡意 — 是 Gatekeeper 對沒有 Apple 簽章、又帶
+quarantine 旗標的 app 的預設反應。你自己 build 出來的，或從本專案 Releases
+下載的，都會是這個狀態。移除 quarantine 旗標即可：
+
+```bash
+# app 已拖到 /Applications
+sudo xattr -dr com.apple.quarantine /Applications/PhotoPick.app
+
+# app 還在 DMG / Downloads
+xattr -dr com.apple.quarantine ~/Downloads/PhotoPick.app
+```
+
+然後正常雙擊開啟。這個指令只需要跑一次。
+
+> **macOS Sequoia 提醒**：舊版「右鍵 → 打開」的繞過法在 Sequoia 上已經
+> **失效** — 該對話框只有「移到垃圾桶」一個按鈕。請用上面的 `xattr`
+> 指令，或到 **系統設定 → 隱私權與安全性**，滑到最下面會看到
+> 「已封鎖 PhotoPick…」，點「**仍要打開**」。
 
 ### Developer ID signing (optional)
 

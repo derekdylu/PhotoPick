@@ -144,8 +144,19 @@ echo "  .app: $PROJECT_ROOT/$APP_BUNDLE"
 echo "  .dmg: $PROJECT_ROOT/$DMG_PATH"
 
 if [ "${1:-}" != "--sign" ]; then
-  echo
-  echo "Note: this build is ad-hoc signed (not notarised). To open it the"
-  echo "first time on a Mac, right-click the .app and choose Open, or run:"
-  echo "    xattr -dr com.apple.quarantine \"/Applications/${APP_NAME}.app\""
+  cat <<EOF
+
+Note: this build is ad-hoc signed (not notarised). On first launch macOS
+(especially Sequoia 15.x) may refuse to open it with
+"${APP_NAME} is damaged" / "is malware" — only a "Move to Trash" button.
+This is Gatekeeper reacting to the quarantine flag, not a real threat.
+
+Fix: remove the quarantine flag, then open normally.
+
+    sudo xattr -dr com.apple.quarantine /Applications/${APP_NAME}.app
+    # or, if still in ~/Downloads:
+    xattr -dr com.apple.quarantine ~/Downloads/${APP_NAME}.app
+
+See README "First launch" section for details.
+EOF
 fi
