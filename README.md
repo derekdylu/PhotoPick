@@ -4,7 +4,7 @@
 
 # PhotoPick
 
-**A macOS app for managing RAW + JPG photo pairs and pushing picks into Lightroom.**
+**A macOS app for managing RAW + JPG photo pairs and pushing picks into Lightroom or another folder.**
 
 </div>
 
@@ -13,7 +13,7 @@
 ## What it does
 
 1. **Remove Orphans** — find (and optionally trash) RAW or JPG files that are missing their counterpart.
-2. **Inbox Tray → Lightroom** — drop the JPGs you like onto a tray, then drag the matched RAW(s) straight into Lightroom.
+2. **Inbox Tray → Lightroom or another folder** — drop the JPGs you like onto a tray, then drag the matched RAW(s) straight into Lightroom or another folder.
 3. A global **Clear cache** action for thumbnail previews.
 
 Works on RAW from Canon, Nikon, Sony, Fuji, Pentax, Panasonic, Sigma, Olympus, and Adobe (`.cr2` `.cr3` `.nef` `.arw` `.dng` `.orf` `.rw2` `.pef` `.srw` `.x3f`), paired against `.jpg` / `.jpeg`.
