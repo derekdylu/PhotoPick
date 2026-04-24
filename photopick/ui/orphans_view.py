@@ -28,6 +28,7 @@ from PySide6.QtWidgets import (
 from ..core import thumbs
 from ..core.matcher import ComparisonMethod, classify
 from ..core.scanner import scan_one_folder, scan_two_folders
+from .folder_drop_label import FolderDropLabel
 
 
 class OrphansView(QWidget):
@@ -87,8 +88,8 @@ class OrphansView(QWidget):
         layout.addWidget(self.two_radio, 0, 2)
 
         self.jpg_label = QLabel("JPG folder:")
-        self.jpg_path_label = QLabel("(none)")
-        self.jpg_path_label.setStyleSheet("color: #555;")
+        self.jpg_path_label = FolderDropLabel("(none)")
+        self.jpg_path_label.folder_dropped.connect(self._set_jpg_folder)
         jpg_btn = QPushButton("Choose…")
         jpg_btn.clicked.connect(self._pick_jpg_folder)
         layout.addWidget(self.jpg_label, 1, 0)
@@ -96,8 +97,8 @@ class OrphansView(QWidget):
         layout.addWidget(jpg_btn, 1, 3)
 
         self.raw_label = QLabel("RAW folder:")
-        self.raw_path_label = QLabel("(none)")
-        self.raw_path_label.setStyleSheet("color: #555;")
+        self.raw_path_label = FolderDropLabel("(none)")
+        self.raw_path_label.folder_dropped.connect(self._set_raw_folder)
         self.raw_btn = QPushButton("Choose…")
         self.raw_btn.clicked.connect(self._pick_raw_folder)
         layout.addWidget(self.raw_label, 2, 0)
@@ -167,14 +168,20 @@ class OrphansView(QWidget):
     def _pick_jpg_folder(self) -> None:
         path = QFileDialog.getExistingDirectory(self, "Choose folder")
         if path:
-            self.jpg_folder = Path(path)
-            self.jpg_path_label.setText(path)
+            self._set_jpg_folder(Path(path))
 
     def _pick_raw_folder(self) -> None:
         path = QFileDialog.getExistingDirectory(self, "Choose RAW folder")
         if path:
-            self.raw_folder = Path(path)
-            self.raw_path_label.setText(path)
+            self._set_raw_folder(Path(path))
+
+    def _set_jpg_folder(self, folder: Path) -> None:
+        self.jpg_folder = folder
+        self.jpg_path_label.setText(str(folder))
+
+    def _set_raw_folder(self, folder: Path) -> None:
+        self.raw_folder = folder
+        self.raw_path_label.setText(str(folder))
 
     def _on_scan(self) -> None:
         single = self.single_radio.isChecked()

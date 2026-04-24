@@ -8,6 +8,7 @@ from PySide6.QtCore import QMimeData, QSize, Qt, QUrl
 from PySide6.QtGui import QDrag, QIcon, QPixmap
 from PySide6.QtWidgets import (
     QAbstractItemView,
+    QButtonGroup,
     QComboBox,
     QFileDialog,
     QGridLayout,
@@ -16,6 +17,7 @@ from PySide6.QtWidgets import (
     QListWidget,
     QListWidgetItem,
     QPushButton,
+    QRadioButton,
     QVBoxLayout,
     QWidget,
 )
@@ -23,6 +25,7 @@ from PySide6.QtWidgets import (
 from ..core import thumbs
 from ..core.matcher import find_raw_for_jpg, is_jpg
 from ..core.scanner import scan_one_folder
+from .folder_drop_label import FolderDropLabel
 
 PAYLOAD_RAW = "raw"
 PAYLOAD_JPG = "jpg"
@@ -144,31 +147,69 @@ class InboxView(QWidget):
         layout.setHorizontalSpacing(12)
         layout.setVerticalSpacing(16)
 
-        layout.addWidget(QLabel("JPG source folder:"), 0, 0)
-        self.jpg_path_label = QLabel("(none)")
-        self.jpg_path_label.setStyleSheet("color: #555;")
+        layout.addWidget(QLabel("Mode:"), 0, 0)
+        self.single_radio = QRadioButton("Single folder (mixed)")
+        self.two_radio = QRadioButton("Two folders (separate)")
+        self.two_radio.setChecked(True)
+        mode_group = QButtonGroup(self)
+        mode_group.addButton(self.single_radio)
+        mode_group.addButton(self.two_radio)
+        self.single_radio.toggled.connect(self._update_pickers)
+        layout.addWidget(self.single_radio, 0, 1)
+        layout.addWidget(self.two_radio, 0, 2)
+
+        self.jpg_source_label = QLabel("JPG source folder:")
+        layout.addWidget(self.jpg_source_label, 1, 0)
+        self.jpg_path_label = FolderDropLabel("(none)")
+        self.jpg_path_label.folder_dropped.connect(self._set_jpg_folder)
         jpg_btn = QPushButton("Choose…")
         jpg_btn.clicked.connect(self._pick_jpg_folder)
-        layout.addWidget(self.jpg_path_label, 0, 1)
-        layout.addWidget(jpg_btn, 0, 2)
+        layout.addWidget(self.jpg_path_label, 1, 1)
+        layout.addWidget(jpg_btn, 1, 2)
 
-        layout.addWidget(QLabel("RAW source folder:"), 1, 0)
-        self.raw_path_label = QLabel("(none)")
-        self.raw_path_label.setStyleSheet("color: #555;")
-        raw_btn = QPushButton("Choose…")
-        raw_btn.clicked.connect(self._pick_raw_folder)
-        layout.addWidget(self.raw_path_label, 1, 1)
-        layout.addWidget(raw_btn, 1, 2)
+        self.raw_source_label = QLabel("RAW source folder:")
+        layout.addWidget(self.raw_source_label, 2, 0)
+        self.raw_path_label = FolderDropLabel("(none)")
+        self.raw_path_label.folder_dropped.connect(self._set_raw_folder)
+        self.raw_btn = QPushButton("Choose…")
+        self.raw_btn.clicked.connect(self._pick_raw_folder)
+        layout.addWidget(self.raw_path_label, 2, 1)
+        layout.addWidget(self.raw_btn, 2, 2)
 
-        layout.addWidget(QLabel("Drag-out payload:"), 2, 0)
+        layout.addWidget(QLabel("Drag-out payload:"), 3, 0)
         self.payload_combo = QComboBox()
         self.payload_combo.addItem("RAW only (default)", PAYLOAD_RAW)
         self.payload_combo.addItem("JPG only", PAYLOAD_JPG)
         self.payload_combo.addItem("Both JPG + RAW", PAYLOAD_BOTH)
-        layout.addWidget(self.payload_combo, 2, 1, 1, 2)
+        layout.addWidget(self.payload_combo, 3, 1, 1, 2)
 
         layout.setColumnStretch(1, 1)
+        self._update_pickers()
         return box
+
+    def _update_pickers(self) -> None:
+        single = self.single_radio.isChecked()
+        if single:
+            self.jpg_source_label.setText("Folder:")
+            self.raw_source_label.setVisible(False)
+            self.raw_path_label.setVisible(False)
+            self.raw_btn.setVisible(False)
+            # Mirror JPG folder into RAW slot so matching uses the same folder.
+            if self.jpg_folder is not None:
+                self.raw_folder = self.jpg_folder
+                self._rebuild_raw_index()
+                self._rematch_all()
+        else:
+            self.jpg_source_label.setText("JPG source folder:")
+            self.raw_source_label.setVisible(True)
+            self.raw_path_label.setVisible(True)
+            self.raw_btn.setVisible(True)
+            # If RAW was mirrored from JPG in single-folder mode, require a fresh pick.
+            if self.raw_folder is not None and self.raw_folder == self.jpg_folder and self.raw_path_label.text() == "(none)":
+                self.raw_folder = None
+                self._raw_index.clear()
+                self._rematch_all()
+        self._update_enabled()
 
     def _build_footer(self) -> QWidget:
         box = QWidget()
@@ -189,34 +230,56 @@ class InboxView(QWidget):
 
     # --- folder pickers ------------------------------------------------
     def _pick_jpg_folder(self) -> None:
-        path = QFileDialog.getExistingDirectory(self, "Choose JPG source folder")
+        prompt = (
+            "Choose folder"
+            if self.single_radio.isChecked()
+            else "Choose JPG source folder"
+        )
+        path = QFileDialog.getExistingDirectory(self, prompt)
         if not path:
             return
-        self.jpg_folder = Path(path)
-        self.jpg_path_label.setText(path)
-        self._update_enabled()
+        self._set_jpg_folder(Path(path))
 
     def _pick_raw_folder(self) -> None:
         path = QFileDialog.getExistingDirectory(self, "Choose RAW source folder")
         if not path:
             return
-        self.raw_folder = Path(path)
-        self.raw_path_label.setText(path)
+        self._set_raw_folder(Path(path))
+
+    def _set_jpg_folder(self, folder: Path) -> None:
+        self.jpg_folder = folder
+        self.jpg_path_label.setText(str(folder))
+        if self.single_radio.isChecked():
+            # In single-folder mode, RAWs live in the same folder.
+            self.raw_folder = folder
+            self._rebuild_raw_index()
+            self._rematch_all()
+        self._update_enabled()
+
+    def _set_raw_folder(self, folder: Path) -> None:
+        self.raw_folder = folder
+        self.raw_path_label.setText(str(folder))
         self._rebuild_raw_index()
         self._rematch_all()
         self._update_enabled()
 
-    def _both_folders_set(self) -> bool:
+    def _ready(self) -> bool:
+        if self.single_radio.isChecked():
+            return self.jpg_folder is not None
         return self.jpg_folder is not None and self.raw_folder is not None
 
     def _update_enabled(self) -> None:
-        ready = self._both_folders_set()
+        ready = self._ready()
         self.list_widget.setEnabled(ready)
         if ready:
             self.hint_label.setText(
                 "Drag JPGs from Finder onto the tray below. "
                 "Then select tiles and drag them onto Lightroom — "
                 "the matched RAW(s) will be sent over."
+            )
+        elif self.single_radio.isChecked():
+            self.hint_label.setText(
+                "Set the folder above (or drag a file onto the path) to enable the tray."
             )
         else:
             self.hint_label.setText(

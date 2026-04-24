@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "photopick"
-version = "0.2.0"
+version = "0.3.0"
 description = "Mac app for organizing RAW/JPG pairs and routing shots into Lightroom"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -32,7 +32,7 @@ include = ["photopick*"]
 [tool.briefcase]
 project_name = "PhotoPick"
 bundle = "local.photoPick"
-version = "0.2.0"
+version = "0.3.0"
 url = "https://github.com/derekdylu/PhotoPick"
 license.file = "LICENSE"
 author = "Derek Lu"
