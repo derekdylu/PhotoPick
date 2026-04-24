@@ -269,6 +269,9 @@ class InboxView(QWidget):
         return self.jpg_folder is not None and self.raw_folder is not None
 
     def _update_enabled(self) -> None:
+        # May be called during _build_setup, before list_widget exists.
+        if not hasattr(self, "list_widget"):
+            return
         ready = self._ready()
         self.list_widget.setEnabled(ready)
         if ready:
