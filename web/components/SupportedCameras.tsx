@@ -1,8 +1,16 @@
+import type { Locale } from "@/lib/i18n";
+
 const brands = [
   `.cr2`, `.cr3`, `.nef`, `.arw`, `.dng`, `.orf`, `.rw2`, `.pef`, `.srw`, `.x3f`,
 ];
 
-export default function SupportedCameras() {
+const dict = {
+  en: { heading: "Supported RAW formats" },
+  zh: { heading: "支援的 RAW 格式" },
+} as const;
+
+export default function SupportedCameras({ lang = "en" }: { lang?: Locale }) {
+  const t = dict[lang];
   return (
     <section
       aria-labelledby="cameras-heading"
@@ -12,7 +20,7 @@ export default function SupportedCameras() {
         id="cameras-heading"
         className="text-center text-sm font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400"
       >
-        Supported RAW formats
+        {t.heading}
       </h2>
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         {brands.map((brand) => (

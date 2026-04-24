@@ -1,11 +1,28 @@
 import Link from "next/link";
+import type { Locale } from "@/lib/i18n";
 
-export default function Footer() {
+const dict = {
+  en: {
+    builtByPrefix: "Built by",
+    builtBySuffix: "",
+    github: "GitHub",
+    license: "MIT License",
+  },
+  zh: {
+    builtByPrefix: "由",
+    builtBySuffix: " 打造",
+    github: "GitHub",
+    license: "MIT 授權",
+  },
+} as const;
+
+export default function Footer({ lang = "en" }: { lang?: Locale }) {
+  const t = dict[lang];
   return (
     <footer className="border-t border-slate-200 px-6 py-10 dark:border-slate-800">
       <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-4 text-sm text-slate-600 dark:text-slate-400 sm:flex-row">
         <p>
-          Built by{" "}
+          {t.builtByPrefix}{" "}
           <Link
             href="https://derekdylu.com"
             className="font-medium text-brand-fg underline-offset-4 hover:underline dark:text-white"
@@ -13,20 +30,20 @@ export default function Footer() {
           >
             Derek Lu
           </Link>
-          . &copy; {new Date().getFullYear()}
+          {t.builtBySuffix}. &copy; {new Date().getFullYear()}
         </p>
         <div className="flex items-center gap-5">
           <Link
             href="https://github.com/derekdylu/PhotoPick"
             className="hover:text-brand-fg dark:hover:text-white"
           >
-            GitHub
+            {t.github}
           </Link>
           <Link
             href="https://github.com/derekdylu/PhotoPick/blob/main/LICENSE"
             className="hover:text-brand-fg dark:hover:text-white"
           >
-            MIT License
+            {t.license}
           </Link>
           <Link
             href="https://derekdylu.com"

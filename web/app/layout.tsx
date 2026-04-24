@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
-import JsonLd from "@/components/JsonLd";
+import HtmlLangSetter from "@/components/HtmlLangSetter";
+import LangToggle from "@/components/LangToggle";
 import ThemeProvider from "@/components/ThemeProvider";
 import ThemeToggle from "@/components/ThemeToggle";
 import "./globals.css";
@@ -44,7 +45,14 @@ export const metadata: Metadata = {
     "DNG",
     "Derek Lu",
   ],
-  alternates: { canonical: "/" },
+  alternates: {
+    canonical: "/",
+    languages: {
+      en: "/",
+      "zh-Hant": "/zh",
+      "x-default": "/",
+    },
+  },
   openGraph: {
     type: "website",
     url: "/",
@@ -52,6 +60,7 @@ export const metadata: Metadata = {
     title,
     description,
     locale: "en_US",
+    alternateLocale: ["zh_TW"],
   },
   twitter: {
     card: "summary_large_image",
@@ -95,8 +104,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable} suppressHydrationWarning>
       <body className="font-sans antialiased">
-        <JsonLd />
         <ThemeProvider>
+          <HtmlLangSetter />
+          <LangToggle />
           <ThemeToggle />
           {children}
         </ThemeProvider>
